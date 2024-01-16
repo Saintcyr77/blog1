@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+ <%- include('./partials/head.ejs') %>
+  <body>
+  <%- include('./partials/nav.ejs') %>
+
+    <div class="blogs content">
+      <h2>All Blogs</h2>
+      <% if(blogs.length > 0) { %> <% blogs.map((res) => { %>
+      <h3 class="title"><%= res.title %></h3>
+      <p class="snippet"><%= res.snippet %></p>
+      <% }); %> <% } else { %>
+      <p>Blogs not found!!!</p>
+      <% } %>
+    </div>
+      <%- include('./partials/footer.ejs') %>
+
+  </body>
+</html>
