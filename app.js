@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { render } = require("ejs");
-const blogRoutes = require('./routes/blogroutes')
+const blogRoutes = require("./routes/blogroutes");
 require("dotenv").config({ path: "./process.env" });
 
 //express app
@@ -70,8 +70,6 @@ app.get("/about", (req, res) => {
   res.render("about", { title: "About Page" });
 });
 
-
-
 //redirects
 
 app.get("/about-us", (req, res) => {
@@ -80,7 +78,7 @@ app.get("/about-us", (req, res) => {
 
 //blog routes orignal
 
-app.use('/blogs',blogRoutes);
+app.use("/blogs", blogRoutes);
 
 // 404 page
 // if we dont have a match in any url  this will run
