@@ -1,4 +1,6 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const Blog = require("./models/blog");
 
 //express app
 
@@ -6,19 +8,57 @@ const app = express();
 //register view engine
 app.set("view engine", "ejs");
 
+const dbURI =
+  "mongodb+srv://shivambhatt04:iGdXv25DdvWUjPmA@nodeblog.8nuu9fc.mongodb.net/?retryWrites=true&w=majority";
+mongoose
+  .connect(dbURI)
+  .then((result) => {
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log("Error is" + err);
+  });
+
 // listen for request
 
-app.listen(3000);
+//mongoose sandbox routes
+
+app.get("/add-blog", (req, res) => {
+  const blog = new Blog({
+    title: "new Blog2",
+    snippet: "About",
+    body: "Please work",
+  });
+  blog
+    .save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log("error is" + err);
+    });
+});
+
+app.get("/all-blogs", (req, res) => {
+  Blog.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+app.get("/single-blog", (req, res) => {
+  Blog.findById("65a75f37a435d7ca067c0219")
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => console.log("error is" + err));
+});
 
 app.get("/", (req, res) => {
-  const blogs = [
-    { title: "Title one", snippet: "lorem ipsum ffffffadad" },
-    { title: "Title two", snippet: "lorem ipsum ffffffadad" },
-    { title: "Title three", snippet: "lorem ipsum ffffffadad" },
-  ];
-
-  res.render("index", { title: "Blog Website", blogs });
-  // res.send('<p>Home Page</p>');
+  res.redirect("/blogs");
 });
 
 app.get("/about", (req, res) => {
@@ -36,6 +76,17 @@ app.get("/about-us", (req, res) => {
   res.redirect("/about");
 });
 
+//blog routes orignal
+app.get("/blogs", (req, res) => {
+  Blog.find()
+    .sort({ createdAt: -1 })
+    .then((result) => {
+      res.render("index", { title: "All Blogs", blogs: result });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 // 404 page
 // if we dont have a match in any url  this will run
 //catch all if nothing else matches
