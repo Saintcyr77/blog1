@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Blog = require("./models/blog");
-require('dotenv').config({ path: "./process.env" });
-
+const { render } = require("ejs");
+const blogRoutes = require('./routes/blogroutes')
+require("dotenv").config({ path: "./process.env" });
 
 //express app
 
@@ -13,7 +13,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 const dbURI = process.env.DB_CONNECTION_STRING;
-console.log('Database Connection String:', dbURI);
+// console.log('Database Connection String:', dbURI);
 mongoose
   .connect(dbURI)
   .then((result) => {
@@ -70,9 +70,7 @@ app.get("/about", (req, res) => {
   res.render("about", { title: "About Page" });
 });
 
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Create Page" });
-});
+
 
 //redirects
 
@@ -81,20 +79,9 @@ app.get("/about-us", (req, res) => {
 });
 
 //blog routes orignal
-app.get("/blogs", (req, res) => {
-  Blog.find()
-    .sort({ createdAt: -1 })
-    .then((result) => {
-      res.render("index", { title: "All Blogs", blogs: result });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
 
-app.post('/blogs', (req, res) => {
-  console.log(req.body);
-})
+app.use('/blogs',blogRoutes);
+
 // 404 page
 // if we dont have a match in any url  this will run
 //catch all if nothing else matches
