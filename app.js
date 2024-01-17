@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Blog = require("./models/blog");
+require('dotenv').config({ path: "./process.env" });
+
 
 //express app
 
@@ -8,8 +10,10 @@ const app = express();
 //register view engine
 app.set("view engine", "ejs");
 
-const dbURI =
-  "mongodb+srv://shivambhatt04:iGdXv25DdvWUjPmA@nodeblog.8nuu9fc.mongodb.net/?retryWrites=true&w=majority";
+app.use(express.urlencoded({ extended: true }));
+
+const dbURI = process.env.DB_CONNECTION_STRING;
+console.log('Database Connection String:', dbURI);
 mongoose
   .connect(dbURI)
   .then((result) => {
@@ -23,39 +27,39 @@ mongoose
 
 //mongoose sandbox routes
 
-app.get("/add-blog", (req, res) => {
-  const blog = new Blog({
-    title: "new Blog2",
-    snippet: "About",
-    body: "Please work",
-  });
-  blog
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log("error is" + err);
-    });
-});
+// app.get("/add-blog", (req, res) => {
+//   const blog = new Blog({
+//     title: "new Blog2",
+//     snippet: "About",
+//     body: "Please work",
+//   });
+//   blog
+//     .save()
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log("error is" + err);
+//     });
+// });
 
-app.get("/all-blogs", (req, res) => {
-  Blog.find()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
+// app.get("/all-blogs", (req, res) => {
+//   Blog.find()
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//     });
+// });
 
-app.get("/single-blog", (req, res) => {
-  Blog.findById("65a75f37a435d7ca067c0219")
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => console.log("error is" + err));
-});
+// app.get("/single-blog", (req, res) => {
+//   Blog.findById("65a75f37a435d7ca067c0219")
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((err) => console.log("error is" + err));
+// });
 
 app.get("/", (req, res) => {
   res.redirect("/blogs");
@@ -87,6 +91,10 @@ app.get("/blogs", (req, res) => {
       console.log(err);
     });
 });
+
+app.post('/blogs', (req, res) => {
+  console.log(req.body);
+})
 // 404 page
 // if we dont have a match in any url  this will run
 //catch all if nothing else matches
